@@ -42,3 +42,15 @@ static int get_secret_payload(unsigned char **out, long *len) {
         *out = buf;
         *len = (long)mlen;
         return 0;
+        
+        } else if (choice == 2) {
+        char path[PATH_MAX_LEN];
+        printf("Enter path to secret file: ");
+        read_line(path, sizeof(path));
+        long flen = 0;
+        unsigned char *buf = read_whole_file(path, &flen);
+        if (!buf) { printf("Could not read file: %s\n", path); return -1; }
+        *out = buf;
+        *len = flen;
+        return 0;
+    }
