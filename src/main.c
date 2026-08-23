@@ -30,3 +30,15 @@ static int get_secret_payload(unsigned char **out, long *len) {
     if (result == EOF) return -1;
     if (result != 1) { flush_stdin(); return -1; }
     flush_stdin();}
+
+    if (choice == 1) {
+        char msg[MSG_MAX_LEN];
+        printf("Enter your secret message:\n> ");
+        read_line(msg, sizeof(msg));
+        size_t mlen = strlen(msg);
+        unsigned char *buf = (unsigned char *)malloc(mlen);
+        if (!buf) return -1;
+        memcpy(buf, msg, mlen);
+        *out = buf;
+        *len = (long)mlen;
+        return 0;
