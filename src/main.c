@@ -87,3 +87,46 @@ static int get_secret_payload(unsigned char **out, long *len) {
         printf("\nEncoding failed: %s\n", bmp_status_message(status));
     }
 }
+
+static void run_bmp_decode(void) {
+    char stego[PATH_MAX_LEN];
+    printf("\n--- LSB Image Steganography: DECODE ---\n");
+    printf("Stego BMP file path: ");
+    read_line(stego, sizeof(stego));
+
+    unsigned char *data = NULL;
+    long len = 0;
+    BmpStatus status = bmp_decode(stego, &data, &len);
+
+    if (status != BMP_OK) {
+        printf("\nDecoding failed: %s\n", bmp_status_message(status));
+        return;
+    }
+
+    printf("\nRecovered %ld bytes.\n", len);
+    printf("  1. Print to screen\n");
+    printf("  2. Save to a file\n");
+    printf("Choice: ");
+    int choice;
+    if (scanf("%d", &choice) != 1) { flush_stdin(); free(data); return; }
+    flush_stdin();
+
+    if (choice == 1) {
+        printf("\n----- Recovered data -----\n");
+        fwrite(data, 1, (size_t)len, stdout);
+        printf("\n---------------------------\n");
+    } else if (choice == 2) {
+        char outpath[PATH_MAX_LEN];
+        printf("Output file path: ");
+        read_line(outpath, sizeof(outpath));
+        FILE *fp = fopen(outpath, "wb");
+        if (!fp) {
+            printf("Could not create '%s'.\n", outpath);
+        } else {
+            fwrite(data, 1, (size_t)len, fp);
+            fclose(fp);
+            printf("Saved to '%s'.\n", outpath);
+        }
+    }
+    free(data);
+}
