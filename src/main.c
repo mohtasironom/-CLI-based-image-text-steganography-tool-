@@ -20,3 +20,13 @@ static void read_line(char *buf, int size) {
         buf[0] = '\0';
     }
 }
+static int get_secret_payload(unsigned char **out, long *len) {
+    int choice;
+    printf("\nHow do you want to supply the secret data?\n");
+    printf("  1. Type a message\n");
+    printf("  2. Load from a file\n");
+    printf("Choice: ");
+    int result = scanf("%d", &choice);
+    if (result == EOF) return -1;
+    if (result != 1) { flush_stdin(); return -1; }
+    flush_stdin();}
