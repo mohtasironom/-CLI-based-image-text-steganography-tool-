@@ -205,3 +205,22 @@ static void run_ws_decode(void) {
     }
     free(data);
 }
+
+static void algorithm_menu(int encode) {
+    int choice;
+    printf("\nChoose a module:\n");
+    printf("  1. LSB Image Steganography (.bmp)\n");
+    printf("  2. Whitespace Text Steganography (.txt)\n");
+    printf("  0. Back\n");
+    printf("Choice: ");
+    int result = scanf("%d", &choice);
+    if (result == EOF) return;
+    if (result != 1) { flush_stdin(); return; }
+    flush_stdin();
+
+    if (choice == 1) {
+        encode ? run_bmp_encode() : run_bmp_decode();
+    } else if (choice == 2) {
+        encode ? run_ws_encode() : run_ws_decode();
+    }
+}
