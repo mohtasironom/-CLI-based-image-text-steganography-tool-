@@ -162,3 +162,46 @@ static void run_ws_encode(void) {
         printf("\nEncoding failed: %s\n", ws_status_message(status));
     }
 }
+
+static void run_ws_decode(void) {
+    char stego[PATH_MAX_LEN];
+    printf("\n--- Whitespace Steganography: DECODE ---\n");
+    printf("Stego text file path: ");
+    read_line(stego, sizeof(stego));
+
+    unsigned char *data = NULL;
+    long len = 0;
+    WsStatus status = ws_decode(stego, &data, &len);
+
+    if (status != WS_OK) {
+        printf("\nDecoding failed: %s\n", ws_status_message(status));
+        return;
+    }
+
+    printf("\nRecovered %ld bytes.\n", len);
+    printf("  1. Print to screen\n");
+    printf("  2. Save to a file\n");
+    printf("Choice: ");
+    int choice;
+    if (scanf("%d", &choice) != 1) { flush_stdin(); free(data); return; }
+    flush_stdin();
+
+    if (choice == 1) {
+        printf("\n----- Recovered data -----\n");
+        fwrite(data, 1, (size_t)len, stdout);
+        printf("\n---------------------------\n");
+    } else if (choice == 2) {
+        char outpath[PATH_MAX_LEN];
+        printf("Output file path: ");
+        read_line(outpath, sizeof(outpath));
+        FILE *fp = fopen(outpath, "wb");
+        if (!fp) {
+            printf("Could not create '%s'.\n", outpath);
+        } else {
+            fwrite(data, 1, (size_t)len, fp);
+            fclose(fp);
+            printf("Saved to '%s'.\n", outpath);
+        }
+    }
+    free(data);
+}
