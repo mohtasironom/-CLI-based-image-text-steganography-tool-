@@ -57,3 +57,33 @@ static int get_secret_payload(unsigned char **out, long *len) {
     printf("Invalid choice.\n");
     return -1;
     }   
+
+    static void run_bmp_encode(void) {
+    char cover[PATH_MAX_LEN], output[PATH_MAX_LEN];
+    printf("\n--- LSB Image Steganography: ENCODE ---\n");
+    printf("Cover BMP file path: ");
+    read_line(cover, sizeof(cover));
+
+    long cap = bmp_capacity_bytes(cover);
+    if (cap < 0) {
+        printf("Error: could not read '%s' as a BMP file.\n", cover);
+        return;
+    }
+    printf("This image can hide up to %ld bytes (including a 4-byte length header).\n", cap);
+
+    unsigned char *secret = NULL;
+    long secret_len = 0;
+    if (get_secret_payload(&secret, &secret_len) != 0) return;
+
+    printf("Output stego BMP path: ");
+    read_line(output, sizeof(output));
+
+    BmpStatus status = bmp_encode(cover, secret, secret_len, output);
+    free(secret);
+
+    if (status == BMP_OK) {
+        printf("\nSuccess! %ld bytes hidden inside '%s'.\n", secret_len, output);
+    } else {
+        printf("\nEncoding failed: %s\n", bmp_status_message(status));
+    }
+}
