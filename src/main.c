@@ -29,7 +29,7 @@ static int get_secret_payload(unsigned char **out, long *len) {
     int result = scanf("%d", &choice);
     if (result == EOF) return -1;
     if (result != 1) { flush_stdin(); return -1; }
-    flush_stdin();}
+    flush_stdin();
 
     if (choice == 1) {
         char msg[MSG_MAX_LEN];
@@ -42,7 +42,7 @@ static int get_secret_payload(unsigned char **out, long *len) {
         *out = buf;
         *len = (long)mlen;
         return 0;
-        
+
         } else if (choice == 2) {
         char path[PATH_MAX_LEN];
         printf("Enter path to secret file: ");
@@ -53,4 +53,7 @@ static int get_secret_payload(unsigned char **out, long *len) {
         *out = buf;
         *len = flen;
         return 0;
-    }
+        }
+    printf("Invalid choice.\n");
+    return -1;
+    }   
