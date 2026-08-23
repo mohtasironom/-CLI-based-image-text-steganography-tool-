@@ -11,3 +11,12 @@ static void print_banner(void) {
     printf("   Group: Silent Core  |  CSE 1290\n");
     printf("=====================================================\n");
 }
+
+static void read_line(char *buf, int size) {
+    if (fgets(buf, size, stdin)) {
+        size_t len = strlen(buf);
+        if (len > 0 && buf[len - 1] == '\n') buf[len - 1] = '\0';
+    } else {
+        buf[0] = '\0';
+    }
+}
