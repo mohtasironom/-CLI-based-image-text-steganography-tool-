@@ -224,3 +224,40 @@ static void algorithm_menu(int encode) {
         encode ? run_ws_encode() : run_ws_decode();
     }
 }
+
+int main(void) {
+    int choice;
+
+    do {
+        print_banner();
+        printf("\nMAIN MENU\n");
+        printf("  1. Encode (hide data)\n");
+        printf("  2. Decode (recover data)\n");
+        printf("  0. Exit\n");
+        printf("Choice: ");
+
+        int result = scanf("%d", &choice);
+        if (result == EOF) {
+            printf("\nInput closed. Exiting.\n");
+            break;
+        }
+        if (result != 1) {
+            flush_stdin();
+            printf("\nInvalid input.\n");
+            continue;
+        }
+        flush_stdin();
+
+        switch (choice) {
+            case 1: algorithm_menu(1); break;
+            case 2: algorithm_menu(0); break;
+            case 0: printf("\nGoodbye!\n"); break;
+            default: printf("\nInvalid choice.\n");
+        }
+
+        if (choice != 0) press_enter_to_continue();
+        printf("\n\n");
+    } while (choice != 0);
+
+    return 0;
+}
