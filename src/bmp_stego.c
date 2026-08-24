@@ -53,3 +53,36 @@ long bmp_capacity_bytes(const char *cover_path) {
     long pixel_bytes = size - offset;
     return pixel_bytes / 8; /* 1 payload bit per pixel byte */
 }
+
+BmpStatus bmp_encode(const char *cover_path, const unsigned char *secret,
+                      long secret_len, const char *output_path) {
+    if (secret_len < 0 || secret_len > 0xFFFFFFFFL) return BMP_ERR_BAD_LENGTH;
+
+    long size = 0;
+    unsigned char *buf = read_whole_file(cover_path, &size);
+    if (!buf) return BMP_ERR_OPEN_COVER;
+
+    long offset = validate_and_get_offset(buf, size);
+    if (offset < 0) { free(buf); return BMP_ERR_NOT_BMP; }
+
+    long pixel_bytes = size - offset;
+    long bits_needed = LENGTH_HEADER_BITS + secret_len * 8;
+    if (bits_needed > pixel_bytes) { free(buf); return BMP_ERR_CAPACITY; }
+
+    uint32_t len32 = (uint32_t)secret_len;
+    unsigned char *pixels = buf + offset;
+    long bit_pos = 0;
+
+    /* Embed 32-bit length header, MSB first */
+    for (int i = 31; i >= 0; i--) {
+        int bit = (len32 >> i) & 1;
+        embed_bit(&pixels[bit_pos++], bit);
+    }
+
+    /* Embed payload bytes, MSB first within each byte */
+    for (long i = 0; i < secret_len; i++) {
+        for (int b = 7; b >= 0; b--) {
+            int bit = (secret[i] >> b) & 1;
+            embed_bit(&pixels[bit_pos++], bit);
+        }
+    }
