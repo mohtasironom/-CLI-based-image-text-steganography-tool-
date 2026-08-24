@@ -142,3 +142,10 @@ WsStatus ws_decode(const char *stego_path, unsigned char **out_data, long *out_l
         else { free_lines(lines, line_count); return WS_ERR_BAD_LENGTH; }
         len32 = (len32 << 1) | (uint32_t)bit;
     }
+
+    long secret_len = (long)len32;
+    long total_bits = LENGTH_HEADER_BITS + secret_len * 8;
+    if (secret_len < 0 || total_bits > line_count) {
+        free_lines(lines, line_count);
+        return WS_ERR_BAD_LENGTH;
+    }
