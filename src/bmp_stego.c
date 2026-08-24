@@ -123,3 +123,21 @@ BmpStatus bmp_decode(const char *stego_path, unsigned char **out_data, long *out
         free(buf);
         return BMP_ERR_BAD_LENGTH;
     }
+
+     unsigned char *secret = (unsigned char *)malloc((size_t)secret_len + 1);
+    if (!secret) { free(buf); return BMP_ERR_MEMORY; }
+
+    for (long i = 0; i < secret_len; i++) {
+        unsigned char byte = 0;
+        for (int b = 0; b < 8; b++) {
+            byte = (unsigned char)((byte << 1) | extract_bit(pixels[bit_pos++]));
+        }
+        secret[i] = byte;
+    }
+    secret[secret_len] = '\0';
+
+    free(buf);
+    *out_data = secret;
+    *out_len = secret_len;
+    return BMP_OK;
+}
