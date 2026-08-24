@@ -12,3 +12,6 @@ typedef enum {
     BMP_ERR_BAD_LENGTH,
     BMP_ERR_MEMORY
 } BmpStatus;
+
+BmpStatus bmp_encode(const char *cover_path, const unsigned char *secret,
+                      long secret_len, const char *output_path);
