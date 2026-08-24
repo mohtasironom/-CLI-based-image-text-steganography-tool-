@@ -74,3 +74,12 @@ static size_t strip_eol(char *line) {
     }
     return len;
 }
+
+
+long ws_capacity_bits(const char *cover_path) {
+    char **lines = NULL;
+    long count = read_lines(cover_path, &lines);
+    if (count < 0) return -1;
+    free_lines(lines, count);
+    return count;
+}
