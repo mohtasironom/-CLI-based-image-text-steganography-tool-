@@ -130,3 +130,15 @@ WsStatus ws_decode(const char *stego_path, unsigned char **out_data, long *out_l
     if (line_count < 0) return WS_ERR_OPEN_COVER;
 
     if (line_count < LENGTH_HEADER_BITS) { free_lines(lines, line_count); return WS_ERR_CAPACITY; }
+
+    uint32_t len32 = 0;
+    for (long i = 0; i < LENGTH_HEADER_BITS; i++) {
+        size_t len = strip_eol(lines[i]);
+        if (len == 0) { free_lines(lines, line_count); return WS_ERR_BAD_LENGTH; }
+        char last = lines[i][len - 1];
+        int bit;
+        if (last == ' ') bit = 0;
+        else if (last == '\t') bit = 1;
+        else { free_lines(lines, line_count); return WS_ERR_BAD_LENGTH; }
+        len32 = (len32 << 1) | (uint32_t)bit;
+    }
