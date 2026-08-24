@@ -15,3 +15,7 @@ typedef enum {
 
 BmpStatus bmp_encode(const char *cover_path, const unsigned char *secret,
                       long secret_len, const char *output_path);
+
+BmpStatus bmp_decode(const char *stego_path, unsigned char **out_data,
+                      long *out_len);                      
+                      
