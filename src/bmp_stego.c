@@ -40,3 +40,4 @@ static long validate_and_get_offset(const unsigned char *buf, long size) {
     if (offset < 14 || offset > size) return -1;
     return offset;
 }
+
