@@ -123,3 +123,10 @@ WsStatus ws_encode(const char *cover_path, const unsigned char *secret,
     free_lines(lines, line_count);
     return WS_OK;
 }
+
+WsStatus ws_decode(const char *stego_path, unsigned char **out_data, long *out_len) {
+    char **lines = NULL;
+    long line_count = read_lines(stego_path, &lines);
+    if (line_count < 0) return WS_ERR_OPEN_COVER;
+
+    if (line_count < LENGTH_HEADER_BITS) { free_lines(lines, line_count); return WS_ERR_CAPACITY; }
