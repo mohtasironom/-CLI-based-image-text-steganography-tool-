@@ -149,3 +149,6 @@ WsStatus ws_decode(const char *stego_path, unsigned char **out_data, long *out_l
         free_lines(lines, line_count);
         return WS_ERR_BAD_LENGTH;
     }
+
+    unsigned char *secret = (unsigned char *)malloc((size_t)secret_len + 1);
+    if (!secret) { free_lines(lines, line_count); return WS_ERR_MEMORY; }
