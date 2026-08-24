@@ -3,3 +3,5 @@
 
 #include <stdio.h>
 #include <stdint.h>
+
+long file_size(FILE *fp);
