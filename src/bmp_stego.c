@@ -97,3 +97,29 @@ BmpStatus bmp_encode(const char *cover_path, const unsigned char *secret,
     if (written != (size_t)size) return BMP_ERR_WRITE;
     return BMP_OK;
 }
+
+BmpStatus bmp_decode(const char *stego_path, unsigned char **out_data, long *out_len) {
+    long size = 0;
+    unsigned char *buf = read_whole_file(stego_path, &size);
+    if (!buf) return BMP_ERR_OPEN_COVER;
+
+    long offset = validate_and_get_offset(buf, size);
+    if (offset < 0) { free(buf); return BMP_ERR_NOT_BMP; }
+
+    long pixel_bytes = size - offset;
+    if (pixel_bytes < LENGTH_HEADER_BITS) { free(buf); return BMP_ERR_CAPACITY; }
+
+    unsigned char *pixels = buf + offset;
+    long bit_pos = 0;
+
+    uint32_t len32 = 0;
+    for (int i = 0; i < LENGTH_HEADER_BITS; i++) {
+        len32 = (len32 << 1) | extract_bit(pixels[bit_pos++]);
+    }
+
+    long secret_len = (long)len32;
+    long max_possible = (pixel_bytes - LENGTH_HEADER_BITS) / 8;
+    if (secret_len < 0 || secret_len > max_possible) {
+        free(buf);
+        return BMP_ERR_BAD_LENGTH;
+    }
