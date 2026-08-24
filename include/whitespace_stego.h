@@ -1,2 +1,11 @@
 #ifndef WHITESPACE_STEGO_H
 #define WHITESPACE_STEGO_H
+
+typedef enum {
+    WS_OK = 0,
+    WS_ERR_OPEN_COVER,
+    WS_ERR_OPEN_OUTPUT,
+    WS_ERR_CAPACITY,
+    WS_ERR_BAD_LENGTH,
+    WS_ERR_MEMORY
+} WsStatus;
