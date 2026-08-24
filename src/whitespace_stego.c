@@ -61,3 +61,8 @@ static long read_lines(const char *path, char ***out_lines) {
     *out_lines = lines;
     return count;
 }
+
+static void free_lines(char **lines, long count) {
+    for (long i = 0; i < count; i++) free(lines[i]);
+    free(lines);
+}
