@@ -86,3 +86,14 @@ BmpStatus bmp_encode(const char *cover_path, const unsigned char *secret,
             embed_bit(&pixels[bit_pos++], bit);
         }
     }
+
+     FILE *out = fopen(output_path, "wb");
+    if (!out) { free(buf); return BMP_ERR_OPEN_OUTPUT; }
+
+    size_t written = fwrite(buf, 1, (size_t)size, out);
+    fclose(out);
+    free(buf);
+
+    if (written != (size_t)size) return BMP_ERR_WRITE;
+    return BMP_OK;
+}
