@@ -25,3 +25,39 @@ static char *dup_str(const char *s) {
     if (copy) memcpy(copy, s, len);
     return copy;
 }
+
+static long read_lines(const char *path, char ***out_lines) {
+    FILE *fp = fopen(path, "r");
+    if (!fp) return -1;
+
+    long capacity = 16, count = 0;
+    char **lines = (char **)malloc((size_t)capacity * sizeof(char *));
+    if (!lines) { fclose(fp); return -1; }
+
+    char buf[LINE_BUF_SIZE];
+    while (fgets(buf, sizeof(buf), fp)) {
+        if (count >= capacity) {
+            capacity *= 2;
+            char **grown = (char **)realloc(lines, (size_t)capacity * sizeof(char *));
+            if (!grown) {
+                for (long i = 0; i < count; i++) free(lines[i]);
+                free(lines);
+                fclose(fp);
+                return -1;
+            }
+            lines = grown;
+        }
+        lines[count] = dup_str(buf);
+        if (!lines[count]) {
+            for (long i = 0; i < count; i++) free(lines[i]);
+            free(lines);
+            fclose(fp);
+            return -1;
+        }
+        count++;
+    }
+
+    fclose(fp);
+    *out_lines = lines;
+    return count;
+}
