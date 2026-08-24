@@ -41,3 +41,15 @@ static long validate_and_get_offset(const unsigned char *buf, long size) {
     return offset;
 }
 
+long bmp_capacity_bytes(const char *cover_path) {
+    long size = 0;
+    unsigned char *buf = read_whole_file(cover_path, &size);
+    if (!buf) return -1;
+
+    long offset = validate_and_get_offset(buf, size);
+    free(buf);
+    if (offset < 0) return -1;
+
+    long pixel_bytes = size - offset;
+    return pixel_bytes / 8; /* 1 payload bit per pixel byte */
+}
