@@ -8,3 +8,24 @@ long file_size(FILE *fp) {
     fseek(fp, cur, SEEK_SET);
     return size;
 }
+
+unsigned char *read_whole_file(const char *path, long *out_len) {
+    FILE *fp = fopen(path, "rb");
+    if (!fp) return NULL;
+
+    long size = file_size(fp);
+    if (size < 0) { fclose(fp); return NULL; }
+
+    unsigned char *buf = (unsigned char *)malloc((size_t)size + 1);
+    if (!buf) { fclose(fp); return NULL; }
+
+    size_t read = fread(buf, 1, (size_t)size, fp);
+    fclose(fp);
+
+    if (read != (size_t)size) { free(buf); return NULL; }
+
+    buf[size] = '\0';
+    if (out_len) *out_len = size;
+    return buf;
+}
+
