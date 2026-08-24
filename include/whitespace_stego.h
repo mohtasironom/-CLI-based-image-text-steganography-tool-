@@ -12,3 +12,12 @@ typedef enum {
 
 WsStatus ws_encode(const char *cover_path, const unsigned char *secret,
                     long secret_len, const char *output_path);
+
+
+WsStatus ws_decode(const char *stego_path, unsigned char **out_data, long *out_len);
+
+long ws_capacity_bits(const char *cover_path);
+
+const char *ws_status_message(WsStatus status);
+
+#endif                    
