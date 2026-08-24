@@ -1,2 +1,14 @@
 #ifndef BMP_STEGO_H
 #define BMP_STEGO_H
+
+typedef enum {
+    BMP_OK = 0,
+    BMP_ERR_OPEN_COVER,
+    BMP_ERR_OPEN_OUTPUT,
+    BMP_ERR_NOT_BMP,
+    BMP_ERR_CAPACITY,
+    BMP_ERR_READ,
+    BMP_ERR_WRITE,
+    BMP_ERR_BAD_LENGTH,
+    BMP_ERR_MEMORY
+} BmpStatus;
