@@ -19,3 +19,9 @@ BmpStatus bmp_encode(const char *cover_path, const unsigned char *secret,
 BmpStatus bmp_decode(const char *stego_path, unsigned char **out_data,
                       long *out_len);                      
                       
+
+long bmp_capacity_bytes(const char *cover_path);
+
+const char *bmp_status_message(BmpStatus status);
+
+#endif                      
