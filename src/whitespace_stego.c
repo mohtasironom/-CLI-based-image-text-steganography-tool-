@@ -83,3 +83,43 @@ long ws_capacity_bits(const char *cover_path) {
     free_lines(lines, count);
     return count;
 }
+
+WsStatus ws_encode(const char *cover_path, const unsigned char *secret,
+                    long secret_len, const char *output_path) {
+    char **lines = NULL;
+    long line_count = read_lines(cover_path, &lines);
+    if (line_count < 0) return WS_ERR_OPEN_COVER;
+
+    long total_bits = LENGTH_HEADER_BITS + secret_len * 8;
+
+    int *bits = (int *)malloc((size_t)total_bits * sizeof(int));
+    if (!bits) { free_lines(lines, line_count); return WS_ERR_MEMORY; }
+
+    long bp = 0;
+    uint32_t len32 = (uint32_t)secret_len;
+    for (int i = 31; i >= 0; i--) bits[bp++] = (len32 >> i) & 1;
+    for (long i = 0; i < secret_len; i++)
+        for (int b = 7; b >= 0; b--) bits[bp++] = (secret[i] >> b) & 1;
+
+    FILE *out = fopen(output_path, "w");
+    if (!out) { free(bits); free_lines(lines, line_count); return WS_ERR_OPEN_OUTPUT; }
+
+    long total_lines_needed = (total_bits > line_count) ? total_bits : line_count;
+
+    for (long i = 0; i < total_lines_needed; i++) {
+        char carrier = 0; /* 0 = no bit for this line */
+        if (i < total_bits) carrier = bits[i] ? '\t' : ' ';
+
+        if (i < line_count) {
+            strip_eol(lines[i]);
+            fputs(lines[i], out);
+        }
+        if (carrier) fputc(carrier, out);
+        fputc('\n', out);
+    }
+
+    fclose(out);
+    free(bits);
+    free_lines(lines, line_count);
+    return WS_OK;
+}
