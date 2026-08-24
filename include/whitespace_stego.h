@@ -1,0 +1,2 @@
+#ifndef WHITESPACE_STEGO_H
+#define WHITESPACE_STEGO_H
