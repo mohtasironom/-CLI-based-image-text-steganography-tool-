@@ -169,3 +169,11 @@ WsStatus ws_decode(const char *stego_path, unsigned char **out_data, long *out_l
         }
         secret[i] = byte;
     }
+
+     secret[secret_len] = '\0';
+
+    free_lines(lines, line_count);
+    *out_data = secret;
+    *out_len = secret_len;
+    return WS_OK;
+}
