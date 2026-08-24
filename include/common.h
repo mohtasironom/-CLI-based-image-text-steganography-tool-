@@ -5,3 +5,5 @@
 #include <stdint.h>
 
 long file_size(FILE *fp);
+
+unsigned char *read_whole_file(const char *path, long *out_len);
