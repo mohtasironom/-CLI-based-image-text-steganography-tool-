@@ -9,3 +9,6 @@ typedef enum {
     WS_ERR_BAD_LENGTH,
     WS_ERR_MEMORY
 } WsStatus;
+
+WsStatus ws_encode(const char *cover_path, const unsigned char *secret,
+                    long secret_len, const char *output_path);
