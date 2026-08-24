@@ -36,3 +36,9 @@ void flush_stdin(void) {
 
 void press_enter_to_continue(void) {
     printf("\nPress ENTER to continue...");
+
+    char discard[256];
+    if (!fgets(discard, sizeof(discard), stdin)) {
+        
+    }
+}
