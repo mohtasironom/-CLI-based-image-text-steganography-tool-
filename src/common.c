@@ -29,3 +29,10 @@ unsigned char *read_whole_file(const char *path, long *out_len) {
     return buf;
 }
 
+void flush_stdin(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { /* discard */ }
+}
+
+void press_enter_to_continue(void) {
+    printf("\nPress ENTER to continue...");
