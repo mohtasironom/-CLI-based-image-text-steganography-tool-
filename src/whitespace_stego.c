@@ -152,3 +152,20 @@ WsStatus ws_decode(const char *stego_path, unsigned char **out_data, long *out_l
 
     unsigned char *secret = (unsigned char *)malloc((size_t)secret_len + 1);
     if (!secret) { free_lines(lines, line_count); return WS_ERR_MEMORY; }
+
+    long li = LENGTH_HEADER_BITS;
+    for (long i = 0; i < secret_len; i++) {
+        unsigned char byte = 0;
+        for (int b = 0; b < 8; b++) {
+            size_t len = strip_eol(lines[li]);
+            if (len == 0) { free(secret); free_lines(lines, line_count); return WS_ERR_BAD_LENGTH; }
+            char last = lines[li][len - 1];
+            int bit;
+            if (last == ' ') bit = 0;
+            else if (last == '\t') bit = 1;
+            else { free(secret); free_lines(lines, line_count); return WS_ERR_BAD_LENGTH; }
+            byte = (unsigned char)((byte << 1) | bit);
+            li++;
+        }
+        secret[i] = byte;
+    }
