@@ -33,3 +33,10 @@ const char *bmp_status_message(BmpStatus status) {
     }
 }
 
+static long validate_and_get_offset(const unsigned char *buf, long size) {
+    if (size < 14) return -1;
+    if (buf[0] != 'B' || buf[1] != 'M') return -1;
+    long offset = (long)read_u32_le(buf + 10);
+    if (offset < 14 || offset > size) return -1;
+    return offset;
+}
