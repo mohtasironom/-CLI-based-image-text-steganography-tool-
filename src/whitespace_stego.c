@@ -18,3 +18,10 @@ const char *ws_status_message(WsStatus status) {
         default:                 return "Unknown error";
     }
 }
+
+static char *dup_str(const char *s) {
+    size_t len = strlen(s) + 1;
+    char *copy = (char *)malloc(len);
+    if (copy) memcpy(copy, s, len);
+    return copy;
+}
