@@ -66,3 +66,11 @@ static void free_lines(char **lines, long count) {
     for (long i = 0; i < count; i++) free(lines[i]);
     free(lines);
 }
+
+static size_t strip_eol(char *line) {
+    size_t len = strlen(line);
+    while (len > 0 && (line[len - 1] == '\n' || line[len - 1] == '\r')) {
+        line[--len] = '\0';
+    }
+    return len;
+}
